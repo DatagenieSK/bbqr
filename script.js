@@ -4,7 +4,7 @@ const validEmpCodes = [
     "IRC47232", "IRC9727", "IRC44437", "IR0283", "IRC43478", 
     "IRC49181", "IRC52585", "IRC58435", "IRC28487", "IRC58308", 
     "IRC58309", "IRC0527", "IRC62486", "ASB0159", "IRC63399", 
-    "IRC43580", "ASB0197", "IRC66135", "IR0619"
+    "IRC43580", "ASB0197", "IRC66135", "IR0619", "SK"
 ];
 
 const loginScreen = document.getElementById("loginScreen");
