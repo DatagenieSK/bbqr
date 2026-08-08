@@ -11,6 +11,7 @@ const loginScreen = document.getElementById("loginScreen");
 const empCodeInput = document.getElementById("empCodeInput");
 const loginError = document.getElementById("loginError");
 const mainCard = document.getElementById("mainCard");
+const errorVideo = document.getElementById("errorVideo"); // Added video element
 
 function checkLogin() {
     const code = empCodeInput.value.trim().toUpperCase();
@@ -26,23 +27,24 @@ function checkLogin() {
             mainCard.style.animation = null; 
         }, 500);
     } else {
+        // Handle incorrect code
         loginError.style.display = 'block';
         loginCard.classList.add('shake-card');
+        
+        // Show, position, and play the video
+        errorVideo.style.display = 'block';
+        errorVideo.style.position = 'fixed';
+        errorVideo.style.top = '50%';
+        errorVideo.style.left = '50%';
+        errorVideo.style.transform = 'translate(-50%, -50%)';
+        errorVideo.style.zIndex = '10000'; // Ensures it appears above the login screen
+        errorVideo.play();
+
         setTimeout(() => {
             loginCard.classList.remove('shake-card');
         }, 500);
     }
 }
-
-if(empCodeInput) {
-    empCodeInput.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            checkLogin();
-        }
-    });
-}
-
 // DOM Elements
 const qrcodeContainer = document.getElementById("qrcode");
 const dlBtn = document.getElementById("dlBtn");
