@@ -1,8 +1,8 @@
 // =====================================================
 // BB QR PRO
-// COMPLETE FIXED JAVASCRIPT
+// MERGED + FIXED JAVASCRIPT
+// New login system + Old working QR system
 // =====================================================
-
 
 
 // =====================================================
@@ -10,9 +10,7 @@
 // =====================================================
 
 const validEmpCodes = [
-
     "17593",
-
     "IRC43228",
     "IRC47318",
     "IRC48509",
@@ -42,9 +40,7 @@ const validEmpCodes = [
     "IR0619",
 
     "SK"
-
 ];
-
 
 
 // =====================================================
@@ -54,46 +50,46 @@ const validEmpCodes = [
 const loginScreen =
     document.getElementById("loginScreen");
 
-
 const empCodeInput =
     document.getElementById("empCodeInput");
-
 
 const loginError =
     document.getElementById("loginError");
 
-
 const loginBtn =
     document.getElementById("loginBtn");
-
 
 const mainCard =
     document.getElementById("mainCard");
 
-
 const errorVideo =
     document.getElementById("errorVideo");
-
 
 const textInput =
     document.getElementById("textInput");
 
-
 const qrContainer =
     document.getElementById("qrcode");
-
 
 const downloadBtn =
     document.getElementById("dlBtn");
 
-
 const historyContainer =
     document.getElementById("historyContainer");
-
 
 const historyList =
     document.getElementById("historyList");
 
+
+// Old feature elements
+const emojiBg =
+    document.getElementById("emojiBg");
+
+const headerTitle =
+    document.getElementById("headerTitle");
+
+const fireCanvas =
+    document.getElementById("fireCanvas");
 
 
 // =====================================================
@@ -103,7 +99,9 @@ const historyList =
 let currentQRText = "";
 
 
-// Get saved history
+// =====================================================
+// HISTORY
+// =====================================================
 
 let history = [];
 
@@ -111,15 +109,11 @@ try {
 
     history =
         JSON.parse(
-            localStorage.getItem(
-                "bbQrHistory"
-            ) || "[]"
+            localStorage.getItem("bbQrHistory") || "[]"
         );
 
     if (!Array.isArray(history)) {
-
         history = [];
-
     }
 
 } catch (error) {
@@ -130,31 +124,22 @@ try {
     );
 
     history = [];
-
 }
 
 
-
 // =====================================================
-// LOGIN FUNCTION
+// LOGIN
 // =====================================================
 
 function checkLogin() {
 
-
-    // Get employee code
-
     const code =
         empCodeInput.value
-        .trim()
-        .toUpperCase();
+            .trim()
+            .toUpperCase();
 
 
-
-    // =================================================
-    // EMPTY CODE
-    // =================================================
-
+    // Empty code
     if (!code) {
 
         showLoginError(
@@ -162,76 +147,48 @@ function checkLogin() {
         );
 
         return;
-
     }
 
 
+    // Valid code
+    if (validEmpCodes.includes(code)) {
 
-    // =================================================
-    // CORRECT CODE
-    // =================================================
-
-    if (
-        validEmpCodes.includes(code)
-    ) {
-
-
-        // Hide error
-
-        loginError.style.display =
-            "none";
-
-
-
-        // Make sure wrong-code video
-        // is hidden
+        loginError.style.display = "none";
 
         stopErrorVideo();
 
 
-
-        // Fade login screen
-
-        loginScreen.style.opacity =
-            "0";
+        // Fade login
+        loginScreen.style.opacity = "0";
 
 
+        setTimeout(function () {
 
-        // Open generator
+            loginScreen.style.display = "none";
 
-        setTimeout(function() {
+            mainCard.style.display = "block";
 
+            // Restart animation if CSS uses it
+            mainCard.style.animation = "none";
 
-            loginScreen.style.display =
-                "none";
+            void mainCard.offsetWidth;
 
-
-            mainCard.style.display =
-                "block";
-
+            mainCard.style.animation = "";
 
         }, 500);
 
 
         return;
-
     }
 
 
-
-    // =================================================
-    // WRONG CODE
-    // =================================================
-
+    // Invalid code
     showLoginError(
         "Invalid Employee Code. Try again."
     );
 
-
     playErrorVideo();
-
 }
-
 
 
 // =====================================================
@@ -240,54 +197,42 @@ function checkLogin() {
 
 function showLoginError(message) {
 
+    if (loginError) {
 
-    loginError.textContent =
-        message;
+        loginError.textContent = message;
 
+        loginError.style.display = "block";
+    }
 
-    loginError.style.display =
-        "block";
-
-
-
-    // Shake login card
 
     const loginCard =
-        loginScreen.querySelector(
-            ".card"
-        );
+        loginScreen
+            ? loginScreen.querySelector(".card")
+            : null;
 
 
     if (loginCard) {
-
 
         loginCard.classList.remove(
             "shake-card"
         );
 
-
         // Restart animation
-
         void loginCard.offsetWidth;
-
 
         loginCard.classList.add(
             "shake-card"
         );
 
-
-        setTimeout(function() {
+        setTimeout(function () {
 
             loginCard.classList.remove(
                 "shake-card"
             );
 
         }, 500);
-
     }
-
 }
-
 
 
 // =====================================================
@@ -296,7 +241,6 @@ function showLoginError(message) {
 
 function playErrorVideo() {
 
-
     if (!errorVideo) {
 
         console.error(
@@ -304,31 +248,26 @@ function playErrorVideo() {
         );
 
         return;
-
     }
 
 
+    errorVideo.style.display = "block";
 
-    // Show video
+    errorVideo.style.position = "fixed";
 
-    errorVideo.style.display =
-        "block";
+    errorVideo.style.top = "50%";
 
+    errorVideo.style.left = "50%";
 
+    errorVideo.style.transform =
+        "translate(-50%, -50%)";
 
-    // Bring video to front
+    errorVideo.style.zIndex = "10000";
 
-    errorVideo.style.zIndex =
-        "10000";
-
-
-
-    // Start from beginning
 
     try {
 
-        errorVideo.currentTime =
-            0;
+        errorVideo.currentTime = 0;
 
     } catch (error) {
 
@@ -336,47 +275,33 @@ function playErrorVideo() {
             "Could not reset video:",
             error
         );
-
     }
 
-
-
-    // Play
 
     const playPromise =
         errorVideo.play();
 
 
-    if (
-        playPromise !== undefined
-    ) {
+    if (playPromise !== undefined) {
 
-        playPromise.catch(
-            function(error) {
+        playPromise.catch(function (error) {
 
-                console.log(
-                    "Video playback error:",
-                    error
-                );
+            console.log(
+                "Video playback error:",
+                error
+            );
 
-            }
-        );
-
+        });
     }
 
 
-
-    // Hide when video ends
-
     errorVideo.onended =
-        function() {
+        function () {
 
             stopErrorVideo();
 
         };
-
 }
-
 
 
 // =====================================================
@@ -385,71 +310,306 @@ function playErrorVideo() {
 
 function stopErrorVideo() {
 
-
     if (!errorVideo) {
-
         return;
-
     }
 
 
     errorVideo.pause();
 
-
-    errorVideo.style.display =
-        "none";
+    errorVideo.style.display = "none";
 
 
     try {
 
-        errorVideo.currentTime =
-            0;
+        errorVideo.currentTime = 0;
 
     } catch (error) {
 
         console.log(error);
-
     }
-
 }
-
 
 
 // =====================================================
 // LOGIN BUTTON
 // =====================================================
 
-loginBtn.addEventListener(
-    "click",
-    function() {
+if (loginBtn) {
 
-        checkLogin();
+    loginBtn.addEventListener(
+        "click",
+        function () {
 
-    }
-);
+            checkLogin();
 
+        }
+    );
+}
 
 
 // =====================================================
 // ENTER KEY LOGIN
 // =====================================================
 
-empCodeInput.addEventListener(
-    "keydown",
-    function(event) {
+if (empCodeInput) {
 
+    empCodeInput.addEventListener(
+        "keydown",
+        function (event) {
 
-        if (
-            event.key === "Enter"
-        ) {
+            if (event.key === "Enter") {
 
-            checkLogin();
+                event.preventDefault();
+
+                checkLogin();
+            }
 
         }
+    );
+}
 
+
+// =====================================================
+// AUDIO SYSTEM
+// =====================================================
+
+let audioCtx = null;
+
+
+function getAudioContext() {
+
+    if (!audioCtx) {
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+        if (!AudioContext) {
+            return null;
+        }
+
+        audioCtx =
+            new AudioContext();
     }
-);
 
+    return audioCtx;
+}
+
+
+function playTone(
+    freq,
+    type,
+    duration,
+    vol
+) {
+
+    const ctx =
+        getAudioContext();
+
+
+    if (!ctx) {
+        return;
+    }
+
+
+    if (ctx.state === "suspended") {
+
+        ctx.resume().catch(
+            function () {}
+        );
+    }
+
+
+    try {
+
+        const osc =
+            ctx.createOscillator();
+
+        const gain =
+            ctx.createGain();
+
+
+        osc.type = type;
+
+        osc.frequency.setValueAtTime(
+            freq,
+            ctx.currentTime
+        );
+
+
+        gain.gain.setValueAtTime(
+            vol || 0.1,
+            ctx.currentTime
+        );
+
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.0001,
+            ctx.currentTime + duration
+        );
+
+
+        osc.connect(gain);
+
+        gain.connect(ctx.destination);
+
+
+        osc.start();
+
+        osc.stop(
+            ctx.currentTime + duration
+        );
+
+    } catch (error) {
+
+        console.log(
+            "Audio error:",
+            error
+        );
+    }
+}
+
+
+function playGenSound() {
+
+    playTone(
+        600,
+        "sine",
+        0.1,
+        0.1
+    );
+}
+
+
+function playDownloadSound() {
+
+    playTone(
+        1200,
+        "sine",
+        0.2,
+        0.1
+    );
+}
+
+
+// =====================================================
+// BOSS SOUND
+// =====================================================
+
+function playBossSound() {
+
+    const ctx =
+        getAudioContext();
+
+
+    if (!ctx) {
+        return;
+    }
+
+
+    if (ctx.state === "suspended") {
+
+        ctx.resume().catch(
+            function () {}
+        );
+    }
+
+
+    try {
+
+        const t =
+            ctx.currentTime;
+
+
+        const osc1 =
+            ctx.createOscillator();
+
+        const gain1 =
+            ctx.createGain();
+
+
+        osc1.type = "sawtooth";
+
+        osc1.frequency.setValueAtTime(
+            60,
+            t
+        );
+
+        osc1.frequency.exponentialRampToValueAtTime(
+            30,
+            t + 2
+        );
+
+
+        gain1.gain.setValueAtTime(
+            0.3,
+            t
+        );
+
+        gain1.gain.linearRampToValueAtTime(
+            0,
+            t + 3
+        );
+
+
+        const osc2 =
+            ctx.createOscillator();
+
+        const gain2 =
+            ctx.createGain();
+
+
+        osc2.type = "square";
+
+        osc2.frequency.setValueAtTime(
+            120,
+            t
+        );
+
+        osc2.frequency.linearRampToValueAtTime(
+            80,
+            t + 1
+        );
+
+
+        gain2.gain.setValueAtTime(
+            0.1,
+            t
+        );
+
+        gain2.gain.linearRampToValueAtTime(
+            0,
+            t + 2
+        );
+
+
+        osc1
+            .connect(gain1)
+            .connect(ctx.destination);
+
+        osc2
+            .connect(gain2)
+            .connect(ctx.destination);
+
+
+        osc1.start();
+
+        osc2.start();
+
+
+        osc1.stop(t + 3);
+
+        osc2.stop(t + 3);
+
+    } catch (error) {
+
+        console.log(
+            "Boss sound error:",
+            error
+        );
+    }
+}
 
 
 // =====================================================
@@ -457,7 +617,6 @@ empCodeInput.addEventListener(
 // =====================================================
 
 function randomDigits(length) {
-
 
     let result = "";
 
@@ -472,29 +631,23 @@ function randomDigits(length) {
             Math.floor(
                 Math.random() * 10
             );
-
     }
 
 
     return result;
-
 }
 
 
-
 // =====================================================
-// GENERATE RANDOM CODE
+// OLD WORKING QR FORMAT
 // =====================================================
 
 function generateRandom(type) {
 
-
-    let value = "";
-
+    let finalCode = "";
 
 
     switch (type) {
-
 
         // =============================================
         // BB NOW
@@ -502,26 +655,25 @@ function generateRandom(type) {
 
         case "BBNOW":
 
-            value =
+            finalCode =
                 "BB" +
                 randomDigits(9);
 
             break;
 
 
-
         // =============================================
-        // MEDIUM PBM
+        // MEDIUM
+        // OLD FORMAT
         // =============================================
 
         case "MED":
 
-            value =
-                "PBM" +
+            finalCode =
+                "PBM-" +
                 randomDigits(10);
 
             break;
-
 
 
         // =============================================
@@ -530,12 +682,11 @@ function generateRandom(type) {
 
         case "HED":
 
-            value =
-                "PBHM" +
+            finalCode =
+                "PBHM-" +
                 randomDigits(10);
 
             break;
-
 
 
         // =============================================
@@ -544,12 +695,11 @@ function generateRandom(type) {
 
         case "SMALL":
 
-            value =
-                "PBS" +
+            finalCode =
+                "PBS-" +
                 randomDigits(10);
 
             break;
-
 
 
         // =============================================
@@ -558,12 +708,11 @@ function generateRandom(type) {
 
         case "LARGE":
 
-            value =
-                "PBL" +
+            finalCode =
+                "PBL-" +
                 randomDigits(10);
 
             break;
-
 
 
         // =============================================
@@ -572,28 +721,28 @@ function generateRandom(type) {
 
         case "SLOT":
 
-            value =
+            finalCode =
                 "BN" +
                 randomDigits(2) +
-                "-PO" +
-                randomDigits(2);
+                "-PO01";
 
             break;
 
 
-
         // =============================================
-        // GEL PAD
+        // GEL
+        // OLD FORMAT
         // =============================================
 
         case "GEL":
 
-            value =
-                "PCM-BLU-" +
-                randomDigits(6);
+        case "Gel":
+
+            finalCode =
+                "PCM-BLU-SM-C" +
+                randomDigits(4);
 
             break;
-
 
 
         // =============================================
@@ -602,12 +751,13 @@ function generateRandom(type) {
 
         case "IN":
 
-            value =
-                "GP-IN-" +
-                randomDigits(6);
+            finalCode =
+                "GP" +
+                randomDigits(2) +
+                "-IN-IBG-E" +
+                randomDigits(4);
 
             break;
-
 
 
         // =============================================
@@ -616,12 +766,13 @@ function generateRandom(type) {
 
         case "BL":
 
-            value =
-                "GP-KL-" +
-                randomDigits(6);
+            finalCode =
+                "GP" +
+                randomDigits(2) +
+                "-KL-BC-A" +
+                randomDigits(4);
 
             break;
-
 
 
         // =============================================
@@ -630,11 +781,10 @@ function generateRandom(type) {
 
         case "DS":
 
-            value =
+            finalCode =
                 "Z-03-E-3";
 
             break;
-
 
 
         // =============================================
@@ -643,12 +793,10 @@ function generateRandom(type) {
 
         case "SOFTBIN":
 
-            value =
-                "SOFT-BIN-FL-" +
-                randomDigits(2);
+            finalCode =
+                "SOFT-BIN-FL-0";
 
             break;
-
 
 
         // =============================================
@@ -657,16 +805,14 @@ function generateRandom(type) {
 
         case "SBIFC":
 
-            value =
-                "SB_IFC_" +
-                randomDigits(6);
+            finalCode =
+                "SB-IFC_123456";
 
             break;
 
 
-
         // =============================================
-        // UNKNOWN TYPE
+        // UNKNOWN
         // =============================================
 
         default:
@@ -677,137 +823,122 @@ function generateRandom(type) {
             );
 
             return;
-
     }
 
 
+    // Put generated value in input
+    if (textInput) {
 
-    // Put code inside input
-
-    textInput.value =
-        value;
-
+        textInput.value =
+            finalCode;
+    }
 
 
     // Generate QR
-
-    createQR(value);
-
+    createQR(
+        finalCode,
+        true
+    );
 }
-
 
 
 // =====================================================
 // CREATE QR CODE
 // =====================================================
 
-function createQR(value) {
-
-
-    // Empty value
+function createQR(
+    value,
+    saveHistory = true
+) {
 
     if (!value) {
-
         return;
-
     }
 
 
+    value =
+        String(value).trim();
 
-    // =================================================
-    // CHECK QR LIBRARY
-    // =================================================
 
+    // Easter egg
+    checkEasterEgg(value);
+
+
+    // Check QR library
     if (
         typeof QRCode === "undefined"
     ) {
 
+        if (qrContainer) {
 
-        qrContainer.innerHTML = `
+            qrContainer.innerHTML = `
 
-            <div
-                style="
-                    color:#ff4500;
-                    font-size:13px;
-                    padding:20px;
-                    text-align:center;
-                "
-            >
+                <div
+                    style="
+                        color:#ff4500;
+                        font-size:13px;
+                        padding:20px;
+                        text-align:center;
+                    "
+                >
 
-                <strong>
-                    QR Library Not Loaded
-                </strong>
+                    <strong>
+                        QR Library Not Loaded
+                    </strong>
 
-                <br><br>
+                    <br><br>
 
-                Please check your internet
-                connection and reload the page.
+                    Please check your internet
+                    connection and reload the page.
 
-            </div>
+                </div>
 
-        `;
+            `;
+        }
 
 
         console.error(
             "QRCode library is not loaded."
         );
 
-
         return;
-
     }
 
-
-
-    // Save current QR text
 
     currentQRText =
         value;
 
 
-
     // Remove old QR
+    if (qrContainer) {
 
-    qrContainer.innerHTML =
-        "";
+        qrContainer.innerHTML = "";
+    }
 
 
-
-    // =================================================
-    // CREATE QR
-    // =================================================
-
+    // Generate QR
     try {
 
-
         new QRCode(
-
             qrContainer,
-
             {
-
                 text: value,
 
-                width: 180,
+                // OLD WORKING SIZE
+                width: 128,
 
-                height: 180,
+                height: 128,
 
-                colorDark:
-                    "#000000",
+                colorDark: "#000000",
 
-                colorLight:
-                    "#ffffff",
+                colorLight: "#ffffff",
 
                 correctLevel:
                     QRCode.CorrectLevel.H
-
             }
-
         );
 
-
     } catch (error) {
-
 
         console.error(
             "QR generation failed:",
@@ -815,77 +946,265 @@ function createQR(value) {
         );
 
 
-        qrContainer.innerHTML = `
+        if (qrContainer) {
 
-            <div
-                style="
-                    color:#ff4500;
-                    padding:20px;
-                    font-size:13px;
-                "
-            >
+            qrContainer.innerHTML = `
 
-                QR generation failed.
+                <div
+                    style="
+                        color:#ff4500;
+                        padding:20px;
+                        font-size:13px;
+                    "
+                >
 
-                <br>
+                    QR generation failed.
 
-                Check browser console.
+                    <br>
 
-            </div>
+                    Check browser console.
 
-        `;
+                </div>
 
+            `;
+        }
 
         return;
-
     }
 
 
+    // Show download
+    if (downloadBtn) {
 
-    // Show download button
+        downloadBtn.style.display =
+            "block";
+    }
 
-    downloadBtn.style.display =
-        "block";
 
+    // Generation sound
+    if (
+        !value.toLowerCase().includes("boss") &&
+        !value.toLowerCase().includes("alauddin")
+    ) {
+
+        playGenSound();
+    }
 
 
     // Save history
+    if (saveHistory) {
 
-    addToHistory(value);
-
+        addToHistory(value);
+    }
 }
 
+
+// =====================================================
+// OLD FUNCTION COMPATIBILITY
+// makeQR()
+// =====================================================
+
+function makeQR(
+    text,
+    saveToHistory = false
+) {
+
+    createQR(
+        text,
+        saveToHistory
+    );
+}
 
 
 // =====================================================
 // MANUAL TEXT QR
+// ENTER KEY
 // =====================================================
 
-textInput.addEventListener(
-    "keydown",
-    function(event) {
+if (textInput) {
+
+    textInput.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
 
 
-        if (
-            event.key === "Enter"
-        ) {
+                const value =
+                    textInput.value.trim();
 
 
-            const value =
-                textInput.value.trim();
+                if (value) {
 
-
-            if (value) {
-
-                createQR(value);
-
+                    createQR(
+                        value,
+                        true
+                    );
+                }
             }
 
         }
+    );
+}
 
+
+// =====================================================
+// SMART INPUT FORMAT
+// RESTORED FROM OLD VERSION
+// =====================================================
+
+function formatSmartInput(val) {
+
+    const clean =
+        val
+            .replace(
+                /[^a-zA-Z0-9]/g,
+                ""
+            )
+            .toUpperCase();
+
+
+    if (clean.length < 2) {
+
+        return clean;
     }
-);
 
+
+    const part1 =
+        clean.substring(0, 1);
+
+    const part2 =
+        clean.substring(1, 3);
+
+    const part3 =
+        clean.substring(3, 4);
+
+    const part4 =
+        clean.substring(4);
+
+
+    let formatted =
+        part1;
+
+
+    if (part2) {
+
+        formatted +=
+            "-" + part2;
+    }
+
+
+    if (part3) {
+
+        formatted +=
+            "-" + part3;
+    }
+
+
+    if (part4) {
+
+        formatted +=
+            "-" + part4;
+    }
+
+
+    return formatted;
+}
+
+
+// =====================================================
+// INPUT HANDLING
+// =====================================================
+
+if (textInput) {
+
+    textInput.addEventListener(
+        "input",
+        function () {
+
+            const currentVal =
+                textInput.value;
+
+
+            const raw =
+                currentVal.replace(
+                    /-/g,
+                    ""
+                );
+
+
+            /*
+             * Smart formatting only for
+             * old-style mixed codes.
+             *
+             * Do not aggressively modify
+             * known QR formats.
+             */
+
+            if (
+                raw.length >= 2 &&
+                /^[A-Za-z][0-9]/.test(raw)
+            ) {
+
+                const formatted =
+                    formatSmartInput(raw);
+
+
+                if (
+                    textInput.value !==
+                    formatted
+                ) {
+
+                    textInput.value =
+                        formatted;
+                }
+            }
+
+
+            /*
+             * Automatic QR generation
+             * restored from old version.
+             */
+
+            if (
+                textInput.value.trim() !== ""
+            ) {
+
+                createQR(
+                    textInput.value,
+                    false
+                );
+
+            } else {
+
+                if (qrContainer) {
+
+                    qrContainer.innerHTML = `
+                        <span
+                            style="
+                                color:#555;
+                                font-size:12px;
+                                font-style:italic;
+                            "
+                        >
+                            Select a type above to start
+                        </span>
+                    `;
+                }
+
+
+                if (downloadBtn) {
+
+                    downloadBtn.style.display =
+                        "none";
+                }
+            }
+
+        }
+    );
+}
 
 
 // =====================================================
@@ -894,8 +1213,10 @@ textInput.addEventListener(
 
 function downloadQR() {
 
+    if (!qrContainer) {
+        return;
+    }
 
-    // Find canvas
 
     const canvas =
         qrContainer.querySelector(
@@ -903,73 +1224,75 @@ function downloadQR() {
         );
 
 
-    // Find image
-
     const image =
         qrContainer.querySelector(
             "img"
         );
 
 
-
-    // No QR
-
-    if (
-        !canvas &&
-        !image
-    ) {
+    if (!canvas && !image) {
 
         alert(
             "Generate a QR code first."
         );
 
         return;
-
     }
 
 
+    // Download sound
+    playDownloadSound();
 
-    // Create download link
 
     const link =
         document.createElement("a");
 
 
-
-    // Canvas available
-
     if (canvas) {
 
-        link.href =
-            canvas.toDataURL(
-                "image/png"
+        try {
+
+            link.href =
+                canvas.toDataURL(
+                    "image/png"
+                );
+
+        } catch (error) {
+
+            console.error(
+                "Canvas download error:",
+                error
             );
 
-    }
+            return;
+        }
 
-
-    // Image available
-
-    else {
+    } else {
 
         link.href =
             image.src;
-
     }
 
 
-
-    // File name
-
-    link.download =
+    // Old filename style
+    const fileName =
         (
             currentQRText ||
             "BB_QR"
-        ) + ".png";
+        )
+            .replace(
+                /[^a-z0-9]/gi,
+                "_"
+            )
+            .substring(
+                0,
+                50
+            );
 
 
+    link.download =
+        fileName + ".png";
 
-    // Trigger download
 
     document.body.appendChild(
         link
@@ -982,53 +1305,57 @@ function downloadQR() {
     document.body.removeChild(
         link
     );
-
 }
-
 
 
 // =====================================================
 // DOWNLOAD BUTTON
 // =====================================================
 
-downloadBtn.addEventListener(
-    "click",
-    function() {
+if (downloadBtn) {
 
-        downloadQR();
+    downloadBtn.addEventListener(
+        "click",
+        function () {
 
-    }
-);
+            downloadQR();
 
+        }
+    );
+}
 
 
 // =====================================================
-// ADD HISTORY
+// HISTORY
 // =====================================================
 
 function addToHistory(value) {
 
+    if (!value) {
+        return;
+    }
 
-    // Put latest item first
 
+    // Latest first
     history = [
 
         value,
 
         ...history.filter(
-            function(item) {
+            function (item) {
 
                 return item !== value;
 
             }
         )
 
-    ].slice(0, 10);
+    ].slice(
+        0,
+        10
+    );
 
 
-
-    // Save browser storage
-
+    // Save
     try {
 
         localStorage.setItem(
@@ -1042,17 +1369,11 @@ function addToHistory(value) {
             "Could not save history:",
             error
         );
-
     }
 
 
-
-    // Update UI
-
     renderHistory();
-
 }
-
 
 
 // =====================================================
@@ -1061,29 +1382,25 @@ function addToHistory(value) {
 
 function renderHistory() {
 
-
-    // No history
-
     if (
-        !history.length
+        !historyContainer ||
+        !historyList
     ) {
+        return;
+    }
 
+
+    if (!history.length) {
 
         historyContainer.style.display =
             "none";
 
-
         historyList.innerHTML =
             "";
 
-
         return;
-
     }
 
-
-
-    // Show history
 
     historyContainer.style.display =
         "block";
@@ -1093,12 +1410,8 @@ function renderHistory() {
         "";
 
 
-
-    // Create each history item
-
     history.forEach(
-        function(value) {
-
+        function (value) {
 
             const item =
                 document.createElement(
@@ -1114,23 +1427,24 @@ function renderHistory() {
                 value;
 
 
-
-            // Click history item
-
             item.addEventListener(
                 "click",
-                function() {
+                function () {
+
+                    if (textInput) {
+
+                        textInput.value =
+                            value;
+                    }
 
 
-                    textInput.value =
-                        value;
-
-
-                    createQR(value);
+                    createQR(
+                        value,
+                        false
+                    );
 
                 }
             );
-
 
 
             historyList.appendChild(
@@ -1139,13 +1453,11 @@ function renderHistory() {
 
         }
     );
-
 }
 
 
-
 // =====================================================
-// QR BUTTONS
+// QR TYPE BUTTONS
 // =====================================================
 
 document
@@ -1153,13 +1465,11 @@ document
         ".type-btn[data-type]"
     )
     .forEach(
-        function(button) {
-
+        function (button) {
 
             button.addEventListener(
                 "click",
-                function() {
-
+                function () {
 
                     const type =
                         button.dataset.type;
@@ -1176,16 +1486,14 @@ document
     );
 
 
-
 // =====================================================
 // ROYAL MODE
-// Press R
+// PRESS R
 // =====================================================
 
 document.addEventListener(
     "keydown",
-    function(event) {
-
+    function (event) {
 
         if (
             event.key.toLowerCase() === "r" &&
@@ -1197,7 +1505,6 @@ document.addEventListener(
             )
         ) {
 
-
             document.body.classList.toggle(
                 "royal-mode"
             );
@@ -1208,13 +1515,371 @@ document.addEventListener(
 );
 
 
+// =====================================================
+// VOLCANO FIRE PARTICLE SYSTEM
+// RESTORED FROM OLD VERSION
+// =====================================================
+
+let particles = [];
+
+let animationId = null;
+
+let isFireActive = false;
+
+let fireCtx = null;
+
+
+if (fireCanvas) {
+
+    fireCtx =
+        fireCanvas.getContext("2d");
+}
+
+
+function resizeCanvas() {
+
+    if (!fireCanvas) {
+        return;
+    }
+
+
+    fireCanvas.width =
+        window.innerWidth;
+
+
+    fireCanvas.height =
+        window.innerHeight;
+}
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+resizeCanvas();
+
+
+// =====================================================
+// PARTICLE
+// =====================================================
+
+class Particle {
+
+    constructor() {
+
+        this.x =
+            Math.random() *
+            fireCanvas.width;
+
+
+        this.y = -20;
+
+
+        this.vx =
+            (Math.random() - 0.5) *
+            3;
+
+
+        this.vy =
+            Math.random() * 4 +
+            3;
+
+
+        this.size =
+            Math.random() * 8 +
+            4;
+
+
+        this.color =
+            `hsl(${Math.random() * 40 + 10}, 100%, 50%)`;
+
+
+        this.life = 150;
+    }
+
+
+    update() {
+
+        this.x +=
+            this.vx;
+
+
+        this.y +=
+            this.vy;
+
+
+        this.life -= 1;
+
+
+        this.size *=
+            0.98;
+    }
+
+
+    draw() {
+
+        if (!fireCtx) {
+            return;
+        }
+
+
+        fireCtx.beginPath();
+
+
+        fireCtx.arc(
+            this.x,
+            this.y,
+            this.size,
+            0,
+            Math.PI * 2
+        );
+
+
+        fireCtx.fillStyle =
+            this.color;
+
+
+        fireCtx.globalAlpha =
+            this.life / 100;
+
+
+        fireCtx.fill();
+    }
+}
+
+
+// =====================================================
+// INIT FIRE
+// =====================================================
+
+function initFire() {
+
+    if (
+        !fireCanvas ||
+        !fireCtx
+    ) {
+
+        return;
+    }
+
+
+    if (isFireActive) {
+        return;
+    }
+
+
+    isFireActive =
+        true;
+
+
+    animateFire();
+}
+
+
+// =====================================================
+// ANIMATE FIRE
+// =====================================================
+
+function animateFire() {
+
+    if (
+        !isFireActive ||
+        !fireCanvas ||
+        !fireCtx
+    ) {
+
+        return;
+    }
+
+
+    fireCtx.clearRect(
+        0,
+        0,
+        fireCanvas.width,
+        fireCanvas.height
+    );
+
+
+    fireCtx.globalCompositeOperation =
+        "lighter";
+
+
+    if (
+        particles.length < 400
+    ) {
+
+        for (
+            let i = 0;
+            i < 8;
+            i++
+        ) {
+
+            particles.push(
+                new Particle()
+            );
+        }
+    }
+
+
+    for (
+        let i = 0;
+        i < particles.length;
+        i++
+    ) {
+
+        particles[i].update();
+
+        particles[i].draw();
+
+
+        if (
+            particles[i].life <= 0 ||
+            particles[i].y >
+            fireCanvas.height + 20
+        ) {
+
+            particles.splice(
+                i,
+                1
+            );
+
+            i--;
+        }
+    }
+
+
+    animationId =
+        requestAnimationFrame(
+            animateFire
+        );
+}
+
+
+// =====================================================
+// EASTER EGG / BOSS MODE
+// =====================================================
+
+function checkEasterEgg(value) {
+
+    if (!value) {
+        return;
+    }
+
+
+    const lower =
+        value.toLowerCase();
+
+
+    const body =
+        document.body;
+
+
+    if (
+        lower.includes("alauddin") ||
+        lower.includes("boss")
+    ) {
+
+        if (
+            !body.classList.contains(
+                "royal-mode"
+            )
+        ) {
+
+            body.classList.add(
+                "royal-mode"
+            );
+
+
+            if (mainCard) {
+
+                mainCard.classList.add(
+                    "shake-card"
+                );
+            }
+
+
+            // Emoji background
+            if (emojiBg) {
+
+                emojiBg.innerHTML = `
+
+                    <div
+                        class="floating-emoji"
+                        style="
+                            top:10%;
+                            left:10%;
+                        "
+                    >
+                        👑
+                    </div>
+
+                    <div
+                        class="floating-emoji"
+                        style="
+                            top:20%;
+                            right:15%;
+                        "
+                    >
+                        🌟
+                    </div>
+
+                    <div
+                        class="floating-emoji"
+                        style="
+                            bottom:15%;
+                            left:20%;
+                        "
+                    >
+                        ✨
+                    </div>
+
+                    <div
+                        class="floating-emoji"
+                        style="
+                            bottom:30%;
+                            right:10%;
+                        "
+                    >
+                        🔥
+                    </div>
+
+                `;
+            }
+
+
+            // Fire
+            initFire();
+
+
+            // Boss sound
+            playBossSound();
+
+
+            if (mainCard) {
+
+                setTimeout(
+                    function () {
+
+                        mainCard.classList.remove(
+                            "shake-card"
+                        );
+
+                    },
+                    1000
+                );
+            }
+        }
+    }
+}
+
 
 // =====================================================
 // INITIALIZE HISTORY
 // =====================================================
 
 renderHistory();
-
 
 
 // =====================================================
@@ -1234,7 +1899,23 @@ console.log(
 );
 
 console.log(
+    "Old QR formats: RESTORED"
+);
+
+console.log(
     "QR generator: READY"
+);
+
+console.log(
+    "Audio system: READY"
+);
+
+console.log(
+    "Royal mode: READY"
+);
+
+console.log(
+    "Fire system: READY"
 );
 
 console.log(
