@@ -329,3 +329,78 @@ body.royal-mode .card {
     align-items: center;
     transition: opacity 0.5s ease-out;
 }
+
+/* --- LOVE MODE (SUNSHINE) --- */
+body.love-mode {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+}
+
+body.love-mode .header {
+    background: linear-gradient(135deg, #ff0844, #ffb199);
+    color: white;
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
+}
+
+body.love-mode .card {
+    border-color: #ff0844;
+    box-shadow: 0 0 30px rgba(255, 8, 68, 0.4);
+}
+
+body.love-mode .type-btn:hover {
+    background-color: #ff0844;
+    border-color: #ffb199;
+    box-shadow: 0 0 15px rgba(255, 8, 68, 0.5);
+    color: white;
+}
+
+body.love-mode input:focus {
+    border-color: #ff0844;
+    box-shadow: 0 0 15px rgba(255, 8, 68, 0.3);
+    background-color: #fff;
+    color: #ff0844;
+}
+
+body.love-mode button.download {
+    color: #ff0844;
+    border-color: #ff0844;
+}
+
+body.love-mode button.download:hover {
+    background-color: #ff0844;
+    color: white;
+    box-shadow: 0 0 20px rgba(255, 8, 68, 0.5);
+}
+
+/* Heartbeat Animation for the Card */
+.heartbeat-card {
+    animation: heartbeat 1.5s ease-in-out infinite both;
+}
+
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.05); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.05); }
+    70% { transform: scale(1); }
+}
+
+/* Flashing "LOVE" Text Overlay */
+.love-flash-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 8rem;
+    font-weight: 900;
+    color: #ff0844;
+    text-shadow: 0 0 20px white, 0 0 40px #ffb199;
+    z-index: 10000;
+    pointer-events: none;
+    animation: flashFade 2.5s ease-out forwards;
+}
+
+@keyframes flashFade {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(2); }
+}

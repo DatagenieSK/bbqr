@@ -1,49 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BB QR Pro</title>
-
-
     <!-- QR CODE LIBRARY -->
-
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-    </script>
-
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <!-- CSS -->
-
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
+    <link rel="stylesheet" href="style.css">
 </head>
-
-
 <body>
-
-
-    <!-- ================================================= -->
     <!-- FIRE CANVAS -->
-    <!-- ================================================= -->
-
     <canvas id="fireCanvas"></canvas>
 
-
-    <!-- ================================================= -->
     <!-- WRONG LOGIN VIDEO -->
-    <!-- ================================================= -->
-
     <video
         id="errorVideo"
         src="d.mp4"
@@ -66,420 +36,85 @@
         "
     ></video>
 
-
-    <!-- ================================================= -->
     <!-- LOGIN SCREEN -->
-    <!-- ================================================= -->
-
-    <div
-        class="login-overlay"
-        id="loginScreen"
-    >
-
+    <div class="login-overlay" id="loginScreen">
         <div class="card">
-
-            <div class="header">
-                🔒 Security Login
-            </div>
-
-
+            <div class="header">🔒 Security Login</div>
             <div class="content">
-
-                <p
-                    style="
-                        font-size:13px;
-                        margin-bottom:20px;
-                        color:#aaa;
-                    "
-                >
-                    Please enter your Employee Code
-                    to access the QR Pro Generator.
+                <p style="font-size:13px; margin-bottom:20px; color:#aaa;">
+                    Please enter your Employee Code to access the QR Pro Generator.
                 </p>
-
-
                 <!-- EMPLOYEE CODE -->
-
-                <input
-                    type="text"
-                    id="empCodeInput"
-                    placeholder="Enter EMP Code..."
-                    autocomplete="off"
-                    style="text-transform:uppercase;"
-                >
-
-
+                <input type="text" id="empCodeInput" placeholder="Enter EMP Code..." autocomplete="off" style="text-transform:uppercase;">
                 <!-- LOGIN ERROR -->
-
-                <p
-                    id="loginError"
-                    style="
-                        color:var(--fire-red);
-                        font-size:12px;
-                        display:none;
-                        margin-top:-10px;
-                        margin-bottom:15px;
-                        font-weight:bold;
-                    "
-                >
+                <p id="loginError" style="color:var(--fire-red); font-size:12px; display:none; margin-top:-10px; margin-bottom:15px; font-weight:bold;">
                     Invalid Employee Code.
                 </p>
-
-
                 <!-- LOGIN BUTTON -->
-
-                <button
-                    id="loginBtn"
-                    class="type-btn"
-                    style="
-                        width:100%;
-                        background-color:var(--bb-green);
-                        border:none;
-                        padding:15px;
-                    "
-                >
+                <button id="loginBtn" class="type-btn" style="width:100%; background-color:var(--bb-green); border:none; padding:15px;">
                     LOGIN
                 </button>
-
             </div>
-
         </div>
-
     </div>
 
-
-
-    <!-- ================================================= -->
     <!-- EMOJI BACKGROUND -->
-    <!-- ================================================= -->
-
-    <div
-        class="emoji-bg"
-        id="emojiBg"
-    >
-
-        <div
-            class="floating-emoji"
-            style="top:10%;left:10%;"
-        >
-            🥦
-        </div>
-
-
-        <div
-            class="floating-emoji"
-            style="top:20%;right:15%;"
-        >
-            🥕
-        </div>
-
-
-        <div
-            class="floating-emoji"
-            style="bottom:15%;left:20%;"
-        >
-            🛒
-        </div>
-
-
-        <div
-            class="floating-emoji"
-            style="bottom:30%;right:10%;"
-        >
-            🍎
-        </div>
-
+    <div class="emoji-bg" id="emojiBg">
+        <div class="floating-emoji" style="top:10%;left:10%;">🥦</div>
+        <div class="floating-emoji" style="top:20%;right:15%;">🥕</div>
+        <div class="floating-emoji" style="bottom:15%;left:20%;">🛒</div>
+        <div class="floating-emoji" style="bottom:30%;right:10%;">🍎</div>
     </div>
 
-
-
-    <!-- ================================================= -->
     <!-- MAIN QR GENERATOR -->
-    <!-- ================================================= -->
-
-    <div
-        class="card"
-        id="mainCard"
-        style="display:none;"
-    >
-
-
+    <div class="card" id="mainCard" style="display:none;">
         <!-- HEADER -->
-
-        <div
-            class="header"
-            id="headerTitle"
-        >
-            ⚡ QR Generator Pro
-        </div>
-
-
+        <div class="header" id="headerTitle">⚡ QR Generator Pro</div>
         <div class="content">
-
-
-            <!-- ================================================= -->
             <!-- QR TYPE BUTTONS -->
-            <!-- ================================================= -->
-
             <div class="btn-grid">
-
-
-                <!-- BB NOW -->
-
-                <button
-                    class="type-btn"
-                    data-type="BBNOW"
-                >
-                    BB Now
-                    <span>
-                        (BB + 9 Digits)
-                    </span>
-                </button>
-
-
-                <!-- MEDIUM PBM -->
-
-                <button
-                    class="type-btn"
-                    data-type="MED"
-                >
-                    Medium PBM
-                    <span>
-                        (PBM + 10 Digits)
-                    </span>
-                </button>
-
-
-                <!-- HED -->
-
-                <button
-                    class="type-btn"
-                    data-type="HED"
-                >
-                    HED
-                    <span>
-                        (PBHM + 10 Digits)
-                    </span>
-                </button>
-
-
-                <!-- SMALL -->
-
-                <button
-                    class="type-btn"
-                    data-type="SMALL"
-                >
-                    Small
-                    <span>
-                        (PBS + 10 Digits)
-                    </span>
-                </button>
-
-
-                <!-- LARGE -->
-
-                <button
-                    class="type-btn"
-                    data-type="LARGE"
-                >
-                    Large
-                    <span>
-                        (PBL + 10 Digits)
-                    </span>
-                </button>
-
-
-                <!-- SLOT -->
-
-                <button
-                    class="type-btn"
-                    data-type="SLOT"
-                >
-                    Slot QR
-                    <span>
-                        (BNxx-POxx)
-                    </span>
-                </button>
-
-
-                <!-- GEL -->
-
-                <button
-                    class="type-btn"
-                    data-type="GEL"
-                >
-                    Gel Pad
-                    <span>
-                        (PCM-BLU...)
-                    </span>
-                </button>
-
-
-                <!-- INSULATED -->
-
-                <button
-                    class="type-btn"
-                    data-type="IN"
-                >
-                    Insulated
-                    <span>
-                        (GP-IN...)
-                    </span>
-                </button>
-
-
-                <!-- BULK -->
-
-                <button
-                    class="type-btn"
-                    data-type="BL"
-                >
-                    Bulk
-                    <span>
-                        (GP-KL...)
-                    </span>
-                </button>
-
-
-                <!-- DISPATCH -->
-
-                <button
-                    class="type-btn"
-                    data-type="DS"
-                >
-                    DISPATCH
-                    <span>
-                        (Z-03-E-3)
-                    </span>
-                </button>
-
-
-                <!-- SOFT BIN -->
-
-                <button
-                    class="type-btn"
-                    data-type="SOFTBIN"
-                >
-                    Soft Bin
-                    <span>
-                        (SOFT-BIN-FL-0)
-                    </span>
-                </button>
-
-
-                <!-- SB IFC -->
-
-                <button
-                    class="type-btn"
-                    data-type="SBIFC"
-                >
-                    SB IFC
-                    <span>
-                        (SB_IFC_123456)
-                    </span>
-                </button>
-
-
+                <button class="type-btn" data-type="BBNOW">BB Now<span>(BB + 9 Digits)</span></button>
+                <button class="type-btn" data-type="MED">Medium PBM<span>(PBM + 10 Digits)</span></button>
+                <button class="type-btn" data-type="HED">HED<span>(PBHM + 10 Digits)</span></button>
+                <button class="type-btn" data-type="SMALL">Small<span>(PBS + 10 Digits)</span></button>
+                <button class="type-btn" data-type="LARGE">Large<span>(PBL + 10 Digits)</span></button>
+                <button class="type-btn" data-type="SLOT">Slot QR<span>(BNxx-POxx)</span></button>
+                <button class="type-btn" data-type="GEL">Gel Pad<span>(PCM-BLU...)</span></button>
+                <button class="type-btn" data-type="IN">Insulated<span>(GP-IN...)</span></button>
+                <button class="type-btn" data-type="BL">Bulk<span>(GP-KL...)</span></button>
+                <button class="type-btn" data-type="DS">DISPATCH<span>(Z-03-E-3)</span></button>
+                <button class="type-btn" data-type="SOFTBIN">Soft Bin<span>(SOFT-BIN-FL-0)</span></button>
+                <button class="type-btn" data-type="SBIFC">SB IFC<span>(SB_IFC_123456)</span></button>
             </div>
 
-
-
-            <!-- ================================================= -->
             <!-- MANUAL TEXT -->
-            <!-- ================================================= -->
+            <input type="text" id="textInput" placeholder="Type text to generate..." autocomplete="off">
 
-            <input
-                type="text"
-                id="textInput"
-                placeholder="Type text to generate..."
-                autocomplete="off"
-            >
-
-
-
-            <!-- ================================================= -->
             <!-- QR CODE -->
-            <!-- ================================================= -->
-
             <div id="qrcode">
-
-                <span
-                    style="
-                        color:#555;
-                        font-size:12px;
-                        font-style:italic;
-                    "
-                >
+                <span style="color:#555; font-size:12px; font-style:italic;">
                     Select a type above to start
                 </span>
-
             </div>
 
-
-
-            <!-- ================================================= -->
             <!-- DOWNLOAD -->
-            <!-- ================================================= -->
+            <button id="dlBtn" class="download">Download Image ⬇️</button>
 
-            <button
-                id="dlBtn"
-                class="download"
-            >
-                Download Image ⬇️
-            </button>
-
-
-
-            <!-- ================================================= -->
             <!-- HISTORY -->
-            <!-- ================================================= -->
-
-            <div
-                id="historyContainer"
-                class="history-container"
-            >
-
-                <div class="history-title">
-                    Recent Codes
-                </div>
-
-
-                <div
-                    id="historyList"
-                    class="history-list"
-                ></div>
-
+            <div id="historyContainer" class="history-container">
+                <div class="history-title">Recent Codes</div>
+                <div id="historyList" class="history-list"></div>
             </div>
 
-
-
-            <!-- ================================================= -->
             <!-- CREDIT -->
-            <!-- ================================================= -->
-
             <div class="credit">
-
                 MADE BY
-
-                <span>
-                    SK ALAUDDIN
-                </span>
-
+                <span>SK ALAUDDIN</span>
             </div>
-
-
         </div>
-
     </div>
 
-
-
-    <!-- ================================================= -->
     <!-- JAVASCRIPT -->
-    <!-- ================================================= -->
-
     <script src="script.js"></script>
-
-
 </body>
-
 </html>
