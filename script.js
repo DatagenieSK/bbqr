@@ -35,7 +35,7 @@ const validEmpCodes = [
     "IRC63399",
 
     "IRC43580",
-    "IR0257
+    "IR0257",
     "ASB0197",
     "IRC66135",
     "IR0619",
