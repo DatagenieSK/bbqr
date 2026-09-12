@@ -314,9 +314,9 @@ function generateRandom(type) {
         case "DS": finalCode = "Z-03-E-3"; break;
         case "SOFTBIN": finalCode = "SOFT-BIN-FL-0"; break;
         case "SBIFC": finalCode = "SB-IFC_123456"; break;
-        case "CBM": finalCode = "CBM-" + randomDigits(9); break;
-        case "CBHM": finalCode = "CBHM-" + randomDigits(9); break;
-        case "CBL": finalCode = "CBL-" + randomDigits(9); break;
+        case "CBM": finalCode = "CBM-" + randomDigits(10); break;
+        case "CBHM": finalCode = "CBHM-" + randomDigits(10); break;
+        case "CBL": finalCode = "CBL-" + randomDigits(10); break;
         default: console.error("Unknown QR type:", type); return;
     }
 
